@@ -5,7 +5,7 @@
 - [About](#about)
 - [Patterns](#patterns--common-ways-to-solve-common-problems)
   - [Decorater Pattern](#decorater-pattern--adding-functionality-to-functions)
-  - [Factory Pattern](#factory-pattern---or-constructor-pattern--module-pattern)
+  - [Factory Pattern](#factory-pattern---or-constructor-pattern-or-module-pattern)
   - [Option Object](#option-object--way-of-providing-configurations)
   - [Documentation](#jsdoc--documenting-your-code-for-future-you)
 - [Code Dependendencies](#code-dependencies--seeing-the-relationships-between-bits-of-code)
