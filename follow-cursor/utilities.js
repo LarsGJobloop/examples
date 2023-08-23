@@ -1,5 +1,3 @@
-// ========================= Helpers =========================
-
 /**
  * Decorates a function so it only runs once each time window
  * Also known as throttling
@@ -21,6 +19,7 @@
  * 
  * @param {Function} func function to throttle
  * @param {number} delay - size of window in milliseconds
+ * @returns {Function}
  */
 export function throttle(func, delay) {
   // Store the time of the last call

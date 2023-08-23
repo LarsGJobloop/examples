@@ -30,12 +30,12 @@ import { throttle } from "./utilities.js"
  * whenever the mouse moves.
  * 
  * You can pass in option to adjust behavior.
- * The defult update frequenzy is 60 times per second
+ * The defult update frequency is 60 times per second
  * 
- * @param {NodeListOf<Element>} elements 
- * @param {UpdateFunction} updateFunction
- * @param {OptionObject?} options
- * @returns - A function to clear out the event listners
+ * @param {NodeListOf<Element>} elements - Collection of elements to run the update function with
+ * @param {UpdateFunction} updateFunction - Function that runs when the mouse moves
+ * @param {OptionObject?} options - Optional Object for configuring how this behaves
+ * @returns A function to clear out the event listners
  */
 export function setup(elements, updateFunction, options) {
   // Config options
@@ -50,6 +50,7 @@ export function setup(elements, updateFunction, options) {
   // Create a new function for each element and store it
   elements.forEach(element => callbacks.push((position) => updateFunction(element, position)))
 
+  // We are storing this in a named variable so we can pass it in to the removeEventListner function
   const throttledFunction = throttle(
     (mouse) => {
       callbacks.forEach(callback => callback({x: mouse.x, y: mouse.y}))

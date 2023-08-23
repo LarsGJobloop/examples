@@ -16,12 +16,9 @@ main > .container {
   height: 400px;
   border-radius: 10px;
 
-  background-color: coral;
-}
-.card:nth-child(n+1) {
-  background-color: cornflowerblue;
+  filter: drop-shadow(4px 12px 24px #333);
 }
 
 .follow {
-  transition: all 1000ms ease-in-out;
+  transition: all 50ms cubic-bezier(.63,-0.26,.44,1.36);
 }
