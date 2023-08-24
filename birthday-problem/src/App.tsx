@@ -1,9 +1,13 @@
+import { Game } from "./components/Game/Game";
 import { LayoutRoot } from "./layouts/LayoutRoot";
 
 function App() {
   return (
     <LayoutRoot>
-      <h2>Problem</h2>
+      <section>
+        <header>Example Board</header>
+        <Game />
+      </section>
     </LayoutRoot>
   );
 }

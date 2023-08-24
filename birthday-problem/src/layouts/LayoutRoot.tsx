@@ -1,5 +1,8 @@
+import type { CSSClasses } from "../types";
+
 interface LayoutRootProps {
   children: React.ReactNode;
+  className?: CSSClasses;
 }
 
 export function LayoutRoot({ children }: LayoutRootProps) {
