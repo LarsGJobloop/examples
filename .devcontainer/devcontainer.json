@@ -12,7 +12,10 @@
 "customizations": {
 	"vscode": {
 		"extensions": [
-			"ritwickdey.LiveServer"
+			"ritwickdey.LiveServer",
+			"bradlc.vscode-tailwindcss",
+			"heybourn.headwind",
+			"esbenp.prettier-vscode"
 		]
 	}
 }
