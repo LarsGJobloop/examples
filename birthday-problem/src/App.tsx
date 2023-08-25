@@ -3,9 +3,8 @@ import { LayoutRoot } from "./layouts/LayoutRoot";
 
 function App() {
   return (
-    <LayoutRoot>
+    <LayoutRoot title="Birthday Problem" className="">
       <section>
-        <header>Example Board</header>
         <Game />
       </section>
     </LayoutRoot>
