@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import * as prng from "../../utilities/prng";
 import { generateArray } from "../../utilities/generateArray";
+import { InputRange } from "../InputRange/InputRange";
 
 /**
  * Coloring based on how many collisions
@@ -127,33 +128,5 @@ function DayBox({ collisions, colorMap }: DayBoxProps) {
     >
       <span className="text-gray-600 select-none">{collisions}</span>
     </li>
-  );
-}
-
-interface InputRangeProps {
-  value: number;
-  onChange: (newValue: number) => void;
-  min: number;
-  max: number;
-  label?: string;
-}
-
-/**
- * A simpler interface for the input range
- */
-function InputRange({ value, onChange, min, max, label }: InputRangeProps) {
-  return (
-    <div className="flex flex-col">
-      <input
-        value={value}
-        onChange={(event) => onChange(Number(event.target.value))}
-        type="range"
-        name="persons"
-        id="persons"
-        min={min}
-        max={max}
-      />
-      {label ? <label htmlFor="persons">{label}</label> : null}
-    </div>
   );
 }
