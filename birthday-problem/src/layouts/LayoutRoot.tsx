@@ -19,13 +19,13 @@ interface LayoutRootProps {
 export function LayoutRoot({ title, children, className }: LayoutRootProps) {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="flex justify-center py-4 bg-amber-200">
+      <header className="flex justify-center py-4 mb-8 bg-amber-200">
         <h1 className="text-lg font-extrabold">{title}</h1>
       </header>
 
       <main className={"grow" + className}>{children}</main>
 
-      <footer className="flex flex-col items-center py-2 text-amber-100 bg-rose-950">
+      <footer className="flex flex-col items-center py-2 mt-8 text-amber-100 bg-rose-950">
         <p>By Lars Gunnar</p>
         <ul>
           <li>
