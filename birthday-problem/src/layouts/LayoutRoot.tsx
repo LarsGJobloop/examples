@@ -19,8 +19,8 @@ interface LayoutRootProps {
 export function LayoutRoot({ title, children, className }: LayoutRootProps) {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="flex justify-center bg-amber-200">
-        <h1>{title}</h1>
+      <header className="flex justify-center py-4 bg-amber-200">
+        <h1 className="text-lg font-extrabold">{title}</h1>
       </header>
 
       <main className={"grow" + className}>{children}</main>
