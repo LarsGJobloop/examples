@@ -4,18 +4,6 @@ import { generateArray } from "../../utilities/generateArray";
 import type { CSSClasses } from "../../types";
 import { mapMonth } from "../../utilities/mapMonth";
 
-/**
- * Color map for the number of collisions
- */
-const frequencyMap = {
-  5: "bg-red-900",
-  4: "bg-red-800",
-  3: "bg-red-600",
-  2: "bg-red-400",
-  1: "bg-green-400",
-  0: "bg-amber-100",
-} as const;
-
 interface GameProps {
   numberOfDays?: number;
 }
@@ -95,45 +83,63 @@ export function Game({ numberOfDays = 365 }: GameProps) {
       </header>
 
       <Calendar
-        amount={numberOfDays}
-        occupied={calendar}
+        totalDays={numberOfDays}
+        birthdaysByDay={calendar}
         className="flex flex-wrap justify-center gap-10 mx-4"
       />
     </div>
   );
 }
 
-interface CalanderProps {
-  amount: number;
+// Color map for the number of birthday collisions
+const frequencyMap = {
+  5: "bg-red-900",
+  4: "bg-red-800",
+  3: "bg-red-600",
+  2: "bg-red-400",
+  1: "bg-green-400",
+  0: "bg-amber-100",
+} as const;
+
+interface CalendarProps {
+  /**
+   * Days to generate
+   */
+  totalDays: number;
+  /**
+   * A list representing the distribution of birthdays
+   */
+  birthdaysByDay: number[];
   className?: CSSClasses;
-  occupied: number[];
 }
 
 /**
- * List of multiple days
+ * A calander component displaying a number of days and how many birthdays are
+ * on that day, grouped by month
  */
-function Calendar({ amount, occupied, className }: CalanderProps) {
-  // Generate a list of boxes for each day
-  const listOfDays = generateArray(amount, (index) => {
+function Calendar({ totalDays, birthdaysByDay, className }: CalendarProps) {
+  // Generate a list of boxes for each day and fill it with birthdays
+  const listOfDays = generateArray(totalDays, (index) => {
     return (
       <li key={index}>
-        <DayBox collisions={occupied[index]} colorMap={frequencyMap} />
+        <DayBox birthdays={birthdaysByDay[index]} colorMap={frequencyMap} />
       </li>
     );
   });
 
+  // Divide the days up by month
   const daysOfMonth = mapMonth((name, days, startingDay) => {
     return (
       <li key={name}>
         <h3>{name}</h3>
-        <ul className="flex flex-wrap max-w-xs gap-1">
+        <ol className="flex flex-wrap max-w-xs gap-1">
           {listOfDays.slice(startingDay, startingDay + days)}
-        </ul>
+        </ol>
       </li>
     );
   });
 
-  return <ul className={className ?? className}>{daysOfMonth}</ul>;
+  return <ol className={className ?? className}>{daysOfMonth}</ol>;
 }
 
 interface DayBoxProps {
