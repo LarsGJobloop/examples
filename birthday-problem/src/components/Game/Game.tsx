@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import * as createPrng from "../../utilities/prng";
 import { generateArray } from "../../utilities/generateArray";
 import { InputRange } from "../InputRange/InputRange";
@@ -28,8 +28,11 @@ export function Game({ numberOfDays = 365 }: GameProps) {
   const [persons, setPersons] = useState(1);
   const [seed, setSeed] = useState(1234);
 
+  // Setup pseudo random number generator
+  const prng = useMemo(() => createPrng.simpleLCG(seed), [seed]);
+
   // Create a calender with the birthdays
-  const calendar = getBirthdaySet(persons, numberOfDays, seed);
+  const calendar = getBirthdaySet(persons, numberOfDays, prng);
 
   // Store the number of collisions in this calander
   const numberOfCollisions = calendar.reduce((accumulator, currentValue) =>
@@ -160,16 +163,13 @@ function DayBox({ collisions, colorMap }: DayBoxProps) {
 function getBirthdaySet(
   numberOfPersons: number,
   numberOfDays: number,
-  seed: number
+  prng: () => number
 ) {
-  // Setup a PRNG with our seed
-  const randomGenerator = createPrng.simpleLCG(seed);
-
   // Create an array representing each day
   const calander: number[] = new Array(numberOfDays).fill(0);
   // For each possible person give them a birthday
   for (let index = 0; index < numberOfPersons; index++) {
-    const birthday = Math.floor(randomGenerator() * (numberOfDays - 1) + 1);
+    const birthday = Math.floor(prng() * (numberOfDays - 1) + 1);
     calander[birthday]++;
   }
 
