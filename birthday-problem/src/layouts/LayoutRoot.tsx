@@ -1,3 +1,4 @@
+import { LinkExternal } from "../components/LinkExternal/LinkExternal";
 import type { CSSClasses } from "../types";
 
 interface LayoutRootProps {
@@ -24,8 +25,20 @@ export function LayoutRoot({ title, children, className }: LayoutRootProps) {
 
       <main className={"grow" + className}>{children}</main>
 
-      <footer className="flex justify-center py-2 text-amber-100 bg-rose-950">
-        <p>&copy; Lars Gunnar</p>
+      <footer className="flex flex-col items-center py-2 text-amber-100 bg-rose-950">
+        <p>By Lars Gunnar</p>
+        <ul>
+          <li>
+            <LinkExternal href="https://github.com/larsgjobloop">
+              GitHub
+            </LinkExternal>
+          </li>
+          <li>
+            <LinkExternal href="https://no.linkedin.com/in/lars-gunnar-solheim-99818b249?trk=people-guest_people_search-card">
+              LinkedIn
+            </LinkExternal>
+          </li>
+        </ul>
       </footer>
     </div>
   );
