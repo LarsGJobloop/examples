@@ -15,7 +15,7 @@ const frequencyMap = {
   2: "bg-red-400",
   1: "bg-green-400",
   0: "bg-red-50",
-};
+} as const;
 
 interface GameProps {
   numberOfDays?: number;
