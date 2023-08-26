@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import * as prng from "../../utilities/prng";
+import { generateArray } from "../../utilities/generateArray";
 
 /**
  * Coloring based on how many collisions
@@ -13,25 +15,24 @@ const frequencyMap = {
 };
 
 interface GameProps {
-  numbers?: number;
+  numberOfDays?: number;
 }
 
 /**
  * Container component
  */
-export function Game({ numbers = 365 }: GameProps) {
+export function Game({ numberOfDays = 365 }: GameProps) {
   const [persons, setPersons] = useState(1);
   const [seed, setSeed] = useState(1234);
 
-  // Setup a simple PRNG that supports seeding
-  const prng = simpleLCG(seed);
+  // Setup a PRNG with our seed
+  const randomGenerator = prng.simpleLCG(seed);
 
   // Create an array representing each day
-  const days = new Array(numbers).fill(0);
-
+  const days = new Array(numberOfDays).fill(0);
   // For each possible person give them a birthday
   for (let index = 0; index < persons; index++) {
-    const birthday = Math.floor(prng() * (numbers - 1) + 1);
+    const birthday = Math.floor(randomGenerator() * (numberOfDays - 1) + 1);
     days[birthday]++;
   }
 
@@ -40,32 +41,34 @@ export function Game({ numbers = 365 }: GameProps) {
   }
 
   return (
-    <div>
-      <div className="flex flex-col items-center">
-        <p>Number of people: {persons}</p>
-        <p>Number of days: {numbers}</p>
-      </div>
+    <div className="flex flex-col items-center">
+      <div className="w-3/4">
+        <div className="flex flex-col">
+          <p>Number of days: {numberOfDays}</p>
+          <p>Number of people: {persons}</p>
+        </div>
 
-      <div className="flex flex-col items-center gap-2 mb-2">
-        <InputRange
-          value={persons}
-          onChange={(newValue) => setPersons(newValue)}
-          min={0}
-          max={numbers}
-        />
+        <div className="flex flex-col gap-2 mb-2">
+          <InputRange
+            value={persons}
+            onChange={(newValue) => setPersons(newValue)}
+            min={0}
+            max={numberOfDays}
+          />
 
-        <div className="flex gap-2">
-          <button
-            className="px-2 py-1 bg-orange-400 rounded shadow-lg hover:bg-orange-300"
-            onClick={reroll}
-          >
-            Reroll
-          </button>
+          <div className="flex gap-2">
+            <button
+              className="px-2 py-1 bg-orange-400 rounded shadow-lg hover:bg-orange-300"
+              onClick={reroll}
+            >
+              Reroll
+            </button>
+          </div>
         </div>
       </div>
 
-      <div className="px-4">
-        <Calander amount={numbers} occupied={days} />
+      <div className="max-w-5xl px-4">
+        <Calander amount={numberOfDays} occupied={days} />
       </div>
     </div>
   );
@@ -132,14 +135,15 @@ interface InputRangeProps {
   onChange: (newValue: number) => void;
   min: number;
   max: number;
+  label?: string;
 }
 
 /**
- * A nicer interface for the input range
+ * A simpler interface for the input range
  */
-function InputRange({ value, onChange, min, max }: InputRangeProps) {
+function InputRange({ value, onChange, min, max, label }: InputRangeProps) {
   return (
-    <div className="flex flex-col max-w-xl">
+    <div className="flex flex-col">
       <input
         value={value}
         onChange={(event) => onChange(Number(event.target.value))}
@@ -149,41 +153,7 @@ function InputRange({ value, onChange, min, max }: InputRangeProps) {
         min={min}
         max={max}
       />
-      <label htmlFor="persons">Number of Persons</label>
+      {label ? <label htmlFor="persons">{label}</label> : null}
     </div>
   );
-}
-
-/**
- * Returns an array populated with the return of the callback function
- *
- * @param amount - number of elements to generate
- * @param callback - function to create items for the array
- */
-function generateArray<T>(
-  amount: number,
-  callback: (index: number, array: T[]) => T
-) {
-  const array = new Array<T>(amount);
-
-  for (let index = 0; index < amount; index++) {
-    array[index] = callback(index, array);
-  }
-
-  return array;
-}
-
-/**
- * PRNG with support for seeding
- * Part of the Linear Congruential Generators
- *
- * @link [Wikipedia LCG](https://en.wikipedia.org/wiki/Linear_congruential_generator)
- */
-function simpleLCG(seed: number) {
-  let state = seed;
-
-  return function () {
-    state = (1664525 * state + 1013904223) % Math.pow(2, 32);
-    return state / Math.pow(2, 32);
-  };
 }
