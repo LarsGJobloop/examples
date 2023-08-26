@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import * as prng from "../../utilities/prng";
+import * as createPrng from "../../utilities/prng";
 import { generateArray } from "../../utilities/generateArray";
 import { InputRange } from "../InputRange/InputRange";
 
@@ -27,7 +27,7 @@ export function Game({ numberOfDays = 365 }: GameProps) {
   const [seed, setSeed] = useState(1234);
 
   // Setup a PRNG with our seed
-  const randomGenerator = prng.simpleLCG(seed);
+  const randomGenerator = createPrng.simpleLCG(seed);
 
   // Create an array representing each day
   const days = new Array(numberOfDays).fill(0);
