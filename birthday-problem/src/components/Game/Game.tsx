@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import * as createPrng from "../../utilities/prng";
 import { generateArray } from "../../utilities/generateArray";
 import { InputRange } from "../InputRange/InputRange";
+import type { CSSClasses } from "../../types";
 
 /**
- * Coloring based on how many collisions
+ * Color map for the number of collisions
  */
 const frequencyMap = {
   5: "bg-red-900",
@@ -20,21 +21,30 @@ interface GameProps {
 }
 
 /**
- * Container component
+ * Birthday problem display
  */
 export function Game({ numberOfDays = 365 }: GameProps) {
   const [persons, setPersons] = useState(1);
   const [seed, setSeed] = useState(1234);
 
-  // Setup a PRNG with our seed
-  const randomGenerator = createPrng.simpleLCG(seed);
+  // Create a calender with the birthdays
+  const calendar = getBirthdaySet(persons, numberOfDays, seed);
 
-  // Create an array representing each day
-  const days = new Array(numberOfDays).fill(0);
-  // For each possible person give them a birthday
-  for (let index = 0; index < persons; index++) {
-    const birthday = Math.floor(randomGenerator() * (numberOfDays - 1) + 1);
-    days[birthday]++;
+  // Store the number of collisions in this calander
+  const numberOfCollisions = calendar.reduce((accumulator, currentValue) =>
+    currentValue > 1 ? accumulator + 1 : accumulator
+  );
+
+  function updatePersons(newNumber: number) {
+    let validNumber = newNumber;
+
+    if (newNumber < 0) {
+      validNumber = 0;
+    } else if (newNumber > numberOfDays) {
+      validNumber = numberOfDays;
+    }
+
+    setPersons(validNumber);
   }
 
   function reroll() {
@@ -46,10 +56,17 @@ export function Game({ numberOfDays = 365 }: GameProps) {
       <div className="w-3/4">
         <div className="flex flex-col">
           <p>Number of days: {numberOfDays}</p>
-          <p>Number of people: {persons}</p>
+          <p>
+            Number of people:{" "}
+            <input
+              type="number"
+              value={persons}
+              onChange={(event) => updatePersons(Number(event.target.value))}
+            />
+          </p>
         </div>
 
-        <div className="flex flex-col gap-2 mb-2">
+        <div className="flex flex-col max-w-md gap-2 mb-2">
           <InputRange
             value={persons}
             onChange={(newValue) => setPersons(newValue)}
@@ -57,48 +74,58 @@ export function Game({ numberOfDays = 365 }: GameProps) {
             max={numberOfDays}
           />
 
-          <div className="flex gap-2">
+          <div className="flex items-center justify-between gap-2">
             <button
               className="px-2 py-1 bg-orange-400 rounded shadow-lg hover:bg-orange-300"
               onClick={reroll}
             >
               Reroll
             </button>
+            <p>Collisions in this set: {numberOfCollisions}</p>
           </div>
         </div>
       </div>
 
-      <div className="max-w-5xl px-4">
-        <Calander amount={numberOfDays} occupied={days} />
-      </div>
+      <Calendar
+        amount={numberOfDays}
+        occupied={calendar}
+        className="flex flex-wrap justify-center gap-10 mx-4"
+      />
     </div>
   );
 }
 
 interface CalanderProps {
   amount: number;
+  className?: CSSClasses;
   occupied: number[];
 }
 
 /**
- * Contains a list of boxes
+ * List of multiple days
  */
-function Calander({ amount, occupied }: CalanderProps) {
-  const openings = useMemo(
-    () =>
-      generateArray(amount, (index) => {
-        return (
-          <DayBox
-            key={index}
-            collisions={occupied[index]}
-            colorMap={frequencyMap}
-          />
-        );
-      }),
-    [amount, occupied]
-  );
+function Calendar({ amount, occupied, className }: CalanderProps) {
+  // Generate a list of boxes for each day
+  const listOfDays = generateArray(amount, (index) => {
+    return (
+      <li key={index}>
+        <DayBox collisions={occupied[index]} colorMap={frequencyMap} />
+      </li>
+    );
+  });
 
-  return <ul className="flex flex-wrap gap-1">{openings}</ul>;
+  const daysOfMonth = mapMonth((name, days, startingDay) => {
+    return (
+      <li key={name}>
+        <h3>{name}</h3>
+        <ul className="flex flex-wrap max-w-xs">
+          {listOfDays.slice(startingDay, startingDay + days)}
+        </ul>
+      </li>
+    );
+  });
+
+  return <ul className={className ?? className}>{daysOfMonth}</ul>;
 }
 
 interface DayBoxProps {
@@ -107,7 +134,7 @@ interface DayBoxProps {
 }
 
 /**
- * Simple box
+ * Component for a single day
  */
 function DayBox({ collisions, colorMap }: DayBoxProps) {
   const clamped = Math.min(collisions, Object.keys(colorMap).length - 1);
@@ -115,18 +142,78 @@ function DayBox({ collisions, colorMap }: DayBoxProps) {
   const color = colorMap[clamped] ? colorMap[clamped] : "bg-amber-200";
 
   return (
-    <li
-      onClick={() =>
-        console.log(
-          `Number of birthdays: ${collisions}\nClamped value: ${clamped}`
-        )
-      }
+    <div
       className={
         "grid w-5 h-5 text-xs rounded place-items-center  shadow-md border-slate-200 border " +
         color
       }
     >
       <span className="text-gray-600 select-none">{collisions}</span>
-    </li>
+    </div>
   );
+}
+
+/**
+ * Helper for generating a array with birthdays
+ */
+function getBirthdaySet(
+  numberOfPersons: number,
+  numberOfDays: number,
+  seed: number
+) {
+  // Setup a PRNG with our seed
+  const randomGenerator = createPrng.simpleLCG(seed);
+
+  // Create an array representing each day
+  const calander = new Array(numberOfDays).fill(0);
+  // For each possible person give them a birthday
+  for (let index = 0; index < numberOfPersons; index++) {
+    const birthday = Math.floor(randomGenerator() * (numberOfDays - 1) + 1);
+    calander[birthday]++;
+  }
+
+  return calander;
+}
+
+/**
+ * Calls a defined callback function on each month of the year, and returns an array that contains the results.
+ *
+ * Does not take leap years into account
+ *
+ * @example
+ * const monthData = mapMonth((monthName, days, startingDay) => {
+ *  return `${monthName} has ${days} days and the first days is number ${startingDay} of the year`
+ * })
+ *
+ * @param callback A function that accepts up to three arguments. The mapMonth method calls the callback function one time for each month of the year.
+ */
+function mapMonth<T>(
+  callback: (monthName: string, daysInMonth: number, startingDay: number) => T
+): T[] {
+  const monthList = [
+    { name: "January", days: 31 },
+    { name: "February", days: 28 },
+    { name: "March", days: 31 },
+    { name: "April", days: 30 },
+    { name: "May", days: 31 },
+    { name: "June", days: 30 },
+    { name: "July", days: 31 },
+    { name: "August", days: 31 },
+    { name: "September", days: 30 },
+    { name: "October", days: 31 },
+    { name: "November", days: 30 },
+    { name: "December", days: 31 },
+  ];
+
+  let currentDays = 0;
+
+  const month = monthList.map(({ name, days }) => {
+    const currentMonth = callback(name, days, currentDays);
+
+    currentDays += days;
+
+    return currentMonth;
+  });
+
+  return month;
 }
