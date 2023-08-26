@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
 import * as createPrng from "../../utilities/prng";
 import { generateArray } from "../../utilities/generateArray";
-import { InputRange } from "../InputRange/InputRange";
 import type { CSSClasses } from "../../types";
 import { mapMonth } from "../../utilities/mapMonth";
 
@@ -71,12 +70,17 @@ export function Game({ numberOfDays = 365 }: GameProps) {
         </div>
 
         <div className="flex flex-col max-w-md gap-2 mb-2">
-          <InputRange
-            value={persons}
-            onChange={(newValue) => setPersons(newValue)}
-            min={0}
-            max={numberOfDays}
-          />
+          <div className="flex flex-col">
+            <input
+              value={persons}
+              onChange={(event) => setPersons(Number(event.target.value))}
+              type="range"
+              name="persons"
+              id="persons"
+              min={0}
+              max={numberOfDays}
+            />
+          </div>
 
           <div className="flex items-center justify-between gap-2">
             <button
