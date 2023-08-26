@@ -14,7 +14,7 @@ const frequencyMap = {
   3: "bg-red-600",
   2: "bg-red-400",
   1: "bg-green-400",
-  0: "bg-red-50",
+  0: "bg-amber-100",
 } as const;
 
 interface GameProps {
@@ -135,12 +135,12 @@ interface DayBoxProps {
 }
 
 /**
- * Component for a single day
+ * Displays a single day
  */
 function DayBox({ collisions, colorMap }: DayBoxProps) {
   const clamped = Math.min(collisions, Object.keys(colorMap).length - 1);
 
-  const color = colorMap[clamped] ? colorMap[clamped] : "bg-amber-200";
+  const color = colorMap[clamped];
 
   return (
     <div
