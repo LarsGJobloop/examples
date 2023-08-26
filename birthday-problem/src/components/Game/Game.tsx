@@ -31,7 +31,7 @@ export function Game({ numberOfDays = 365 }: GameProps) {
   const prng = useMemo(() => createPrng.simpleLCG(seed), [seed]);
 
   // Create a calender with the birthdays
-  const calendar = getBirthdaySet(persons, numberOfDays, prng);
+  const calendar = generateBirthdayDistribution(persons, numberOfDays, prng);
 
   // Store the number of collisions in this calander
   const numberOfCollisions = calendar.reduce((accumulator, currentValue) =>
@@ -162,18 +162,30 @@ function DayBox({ collisions, colorMap }: DayBoxProps) {
 }
 
 /**
- * Helper for generating a array with birthdays
+ * Generates a list of days representing the distribution of birthdays across days
+ *
+ * @param numberOfPersons Total number of peoples
+ * @param numberOfDays Total number of days
+ * @param randomGenerator A function that generates random numbers between 0 and 1
+ * @returns {number[]} An array representing the number of birthdays on each day
+ *
+ * @example
+ * // Birthdays for 10 people spread across 31 days
+ * const birthdaysInJanuary = getBirthdaySet(10, 30, Math.random)
+ * console.log(birthdaysInJanuary)
  */
-function getBirthdaySet(
+function generateBirthdayDistribution(
   numberOfPersons: number,
   numberOfDays: number,
-  prng: () => number
+  randomGenerator: () => number
 ) {
   // Create an array representing each day
   const calander: number[] = new Array(numberOfDays).fill(0);
   // For each possible person give them a birthday
   for (let index = 0; index < numberOfPersons; index++) {
-    const birthday = Math.floor(prng() * (numberOfDays - 1) + 1);
+    const birthday = Math.floor(
+      Math.abs(randomGenerator()) * (numberOfDays - 1)
+    );
     calander[birthday]++;
   }
 
