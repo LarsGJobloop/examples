@@ -56,11 +56,11 @@ export function Game({ numberOfDays = 365 }: GameProps) {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="w-3/4">
+      <header className="w-3/4">
         <div className="flex flex-col">
           <p>Number of days: {numberOfDays}</p>
           <p>
-            Number of people:{" "}
+            Number of people:
             <input
               type="number"
               value={persons}
@@ -92,7 +92,7 @@ export function Game({ numberOfDays = 365 }: GameProps) {
             <p>Collisions in this set: {numberOfCollisions}</p>
           </div>
         </div>
-      </div>
+      </header>
 
       <Calendar
         amount={numberOfDays}
