@@ -16,10 +16,7 @@ export function BirthdayProblem({ numberOfDays = 365 }: GameProps) {
   const [seed, setSeed] = useState(Date.now());
 
   // Setup pseudo random number generator
-  const randomNumberGenerator = useMemo(
-    () => createPrng.simpleLCG(seed),
-    [seed]
-  );
+  const randomNumberGenerator = createPrng.simpleLCG(seed);
 
   // Create a calender with the birthday distribution
   // and number representing total of days with collisions
