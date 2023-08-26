@@ -137,26 +137,29 @@ function Calendar({ amount, occupied, className }: CalanderProps) {
 }
 
 interface DayBoxProps {
-  collisions: number;
-  colorMap: { [key: number]: string };
+  /**
+   * Number of birthdays on this day
+   */
+  birthdays: number;
+  /**
+   * A mapping of number of birthdays to a css class representing colors
+   */
+  colorMap: { [key: number]: CSSClasses };
 }
 
 /**
- * Displays a single day
+ * Displays a single day along with color coded number of birthdays on that day
  */
-function DayBox({ collisions, colorMap }: DayBoxProps) {
-  const clamped = Math.min(collisions, Object.keys(colorMap).length - 1);
-
+function DayBox({ birthdays, colorMap }: DayBoxProps) {
+  // Clamp birthdays to range of colorMap
+  const clamped = Math.min(birthdays, Object.keys(colorMap).length - 1); // Birthdays can be zero, Object.length starts at 1
   const color = colorMap[clamped];
 
   return (
     <div
-      className={
-        "grid w-8 h-8 text-xs rounded place-items-center  shadow-md border-slate-200 border " +
-        color
-      }
+      className={`grid w-8 h-8 text-xs rounded place-items-center  shadow-md border-slate-200 border ${color}`}
     >
-      <span className="text-gray-600 select-none">{collisions}</span>
+      <span className="text-gray-600 select-none">{birthdays}</span>
     </div>
   );
 }
