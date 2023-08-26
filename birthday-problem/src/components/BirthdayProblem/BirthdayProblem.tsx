@@ -77,13 +77,13 @@ export function BirthdayProblem({ numberOfDays = 365 }: GameProps) {
           <input
             type="range"
             value={persons}
-            onChange={(event) => setPersons(Number(event.target.value))}
+            onChange={(event) => updatePersons(Number(event.target.value))}
             min={0}
             max={numberOfDays}
           />
 
           <button
-            className="px-2 py-1 mx-auto bg-orange-400 rounded shadow-lg w-36 hover:bg-orange-300"
+            className="px-2 py-1 mx-auto bg-orange-400 rounded shadow-lg w-36 hover:bg-orange-300 hover:scale-105 active:scale-95"
             onClick={reroll}
           >
             Reroll
@@ -148,7 +148,7 @@ function Calendar({ totalDays, birthdaysByDay, className }: CalendarProps) {
     return (
       <li key={name}>
         <h3>{name}</h3>
-        <ol className="flex flex-wrap max-w-xs gap-1">
+        <ol className="grid grid-cols-7 gap-1">
           {listOfDays.slice(startingDay, startingDay + days)}
         </ol>
       </li>
@@ -179,7 +179,7 @@ function DayBox({ birthdays, colorMap }: DayBoxProps) {
 
   return (
     <div
-      className={`grid w-8 h-8 text-xs rounded place-items-center shadow-md border-slate-200 border ${color}`}
+      className={`grid w-8 h-8 text-xs rounded place-items-center shadow-md border-slate-200 border ${color} hover:scale-150 hover:shadow-lg hover:font-bold motion-safe:transition-all`}
     >
       <span className="select-none">{birthdays}</span>
     </div>
