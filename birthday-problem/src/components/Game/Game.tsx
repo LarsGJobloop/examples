@@ -118,7 +118,7 @@ function Calendar({ amount, occupied, className }: CalanderProps) {
     return (
       <li key={name}>
         <h3>{name}</h3>
-        <ul className="flex flex-wrap max-w-xs">
+        <ul className="flex flex-wrap max-w-xs gap-1">
           {listOfDays.slice(startingDay, startingDay + days)}
         </ul>
       </li>
@@ -144,7 +144,7 @@ function DayBox({ collisions, colorMap }: DayBoxProps) {
   return (
     <div
       className={
-        "grid w-5 h-5 text-xs rounded place-items-center  shadow-md border-slate-200 border " +
+        "grid w-8 h-8 text-xs rounded place-items-center  shadow-md border-slate-200 border " +
         color
       }
     >
