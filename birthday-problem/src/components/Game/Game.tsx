@@ -165,7 +165,7 @@ function getBirthdaySet(
   const randomGenerator = createPrng.simpleLCG(seed);
 
   // Create an array representing each day
-  const calander = new Array(numberOfDays).fill(0);
+  const calander: number[] = new Array(numberOfDays).fill(0);
   // For each possible person give them a birthday
   for (let index = 0; index < numberOfPersons; index++) {
     const birthday = Math.floor(randomGenerator() * (numberOfDays - 1) + 1);
